@@ -1,10 +1,21 @@
 class Game {
   constructor(height, width) {
+    this.makePlayers();
     this.height = height;
     this.width = width;
-    this.currPlayer = 1;
+    this.currPlayer = this.PLAYER1;
     this.board = [];
     this.gameRunning = true;
+  }
+
+  makePlayers() {
+
+    let p1Input = document.querySelector(".p1Color").value
+    let p2Input = document.querySelector(".p2Color").value
+
+    this.PLAYER1 = new Player(p1Input)
+    this.PLAYER2 = new Player(p2Input)
+    
   }
 
   makeBoard() {
@@ -53,9 +64,9 @@ class Game {
   }
 
   placeInTable(y, x) {
-    const piece = document.createElement('div');
-    piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+
+    let piece = this.currPlayer.makePiece();
+
     piece.style.top = -50 * (y + 2);
   
     const spot = document.getElementById(`${y}-${x}`);
@@ -92,7 +103,7 @@ class Game {
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.PLAYER1 ? this.PLAYER2 : this.PLAYER1;
   }
 
   checkForWin() {
@@ -130,9 +141,33 @@ class Game {
 
 }
 
+class Player {
+
+  constructor(color) {
+    this.color = color;
+  }
+
+  makePiece() {
+
+    const piece = document.createElement('div');
+    piece.classList.add('piece');
+    piece.style.backgroundColor = this.color;
+
+    return piece;
+
+  }
+
+} 
+
 function clearBoard() {
   let board = document.getElementById('board');
   board.innerHTML = '';
+}
+
+function clearInputs() {
+  
+  document.querySelector(".p1Color").value = ""
+  document.querySelector(".p2Color").value = ""
 }
 
 function newGame() {
@@ -141,6 +176,7 @@ function newGame() {
   let game = new Game(6, 7);
   game.makeBoard();
   game.makeHtmlBoard();
+  clearInputs();
 }
 
 let newGameButton = document.getElementById('new-game');
